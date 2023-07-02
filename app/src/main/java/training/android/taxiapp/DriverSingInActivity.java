@@ -14,8 +14,8 @@ public class DriverSingInActivity extends AppCompatActivity {
 
     private TextInputLayout textInputEmail, textInputName, textInputPassword, textInputConfirmPassword;
     private Button loginSingUpButton;
-
     private TextView toggleLoginSingUpTextView;
+    private boolean isLoginModeActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +29,24 @@ public class DriverSingInActivity extends AppCompatActivity {
         loginSingUpButton = findViewById(R.id.loginSingUpButton);
         toggleLoginSingUpTextView = findViewById(R.id.toggleLoginSingUpTextView);
 
-        loginSingUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginSingUpUser(view);
-            }
-        });
-        toggleLoginSingUpTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        loginSingUpButton.setOnClickListener(view -> loginSingUpUser(view));
+        toggleLoginSingUpTextView.setOnClickListener(view -> toggleLoginSingUp(view));
+    }
 
-            }
-        });
+    private void toggleLoginSingUp(View view) {
+        if (isLoginModeActive) {
+            isLoginModeActive = false;
+            loginSingUpButton.setText(R.string.sing_up);
+            toggleLoginSingUpTextView.setText(R.string.tap_to_log_in);
+            textInputConfirmPassword.setVisibility(View.VISIBLE);
+            textInputName.setVisibility(View.VISIBLE);
+        }else {
+            isLoginModeActive = true;
+            loginSingUpButton.setText(R.string.log_in);
+            toggleLoginSingUpTextView.setText(R.string.tap_to_sing_up);
+            textInputConfirmPassword.setVisibility(View.GONE);
+            textInputName.setVisibility(View.GONE);
+        }
     }
 
     private void loginSingUpUser(View view) {
