@@ -6,4 +6,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="sing_up">Sing Up</string>
     <string name="tap_to_log_in">Tap To Log In</string>
+    <string name="driver_sing_in">Driver Sing In</string>
+    <string name="passenger_sing_in">Passenger Sing In</string>
 </resources>

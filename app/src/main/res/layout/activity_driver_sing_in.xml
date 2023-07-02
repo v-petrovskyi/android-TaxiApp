@@ -7,6 +7,17 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".DriverSingInActivity">
+    <TextView
+        android:text="@string/driver_sing_in"
+        android:textAllCaps="true"
+        android:textColor="@color/color_orange"
+        android:background="@color/color_accent"
+        android:textSize="30sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputEmail"
