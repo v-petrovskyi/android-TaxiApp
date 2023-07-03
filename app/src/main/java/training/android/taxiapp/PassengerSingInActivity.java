@@ -1,13 +1,21 @@
 package training.android.taxiapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class PassengerSingInActivity extends AppCompatActivity {
     private TextInputLayout textInputEmail, textInputName, textInputPassword, textInputConfirmPassword;
@@ -15,6 +23,9 @@ public class PassengerSingInActivity extends AppCompatActivity {
 
     private TextView toggleLoginSingUpTextView;
     private boolean isLoginModeActive;
+    private FirebaseAuth mAuth;
+    private final String TAG="PassengerSingInActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,8 @@ public class PassengerSingInActivity extends AppCompatActivity {
 
         loginSingUpButton.setOnClickListener(view -> loginSingUpUser(view));
         toggleLoginSingUpTextView.setOnClickListener(view -> toggleLoginSingUp(view));
+        mAuth = FirebaseAuth.getInstance();
+
     }
 
     private void toggleLoginSingUp(View view) {
@@ -49,8 +62,47 @@ public class PassengerSingInActivity extends AppCompatActivity {
 
 
     private void loginSingUpUser(View view) {
-        if (!validateEmail() | !validateName() | !validatePassword()) {
-            return;
+        if (isLoginModeActive) {
+            if (!validateEmail() | !validateName() | !validatePassword()) {
+                return;
+            }
+            mAuth.signInWithEmailAndPassword(textInputEmail.getEditText().getText().toString().trim(), textInputPassword.getEditText().getText().toString().trim())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+//                                updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(PassengerSingInActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+//                                updateUI(null);
+                            }
+                        }
+                    });
+        } else {
+            mAuth.createUserWithEmailAndPassword(textInputEmail.getEditText().getText().toString().trim(), textInputPassword.getEditText().getText().toString().trim())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+//                            updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(PassengerSingInActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                            }
+                        }
+                    });
         }
     }
 
