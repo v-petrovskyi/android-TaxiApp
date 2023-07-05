@@ -3,6 +3,7 @@ package training.android.taxiapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +26,7 @@ public class PassengerSingInActivity extends AppCompatActivity {
     private TextView toggleLoginSingUpTextView;
     private boolean isLoginModeActive;
     private FirebaseAuth mAuth;
-    private final String TAG="PassengerSingInActivity";
+    private final String TAG = "PassengerSingInActivity";
 
 
     @Override
@@ -33,10 +34,9 @@ public class PassengerSingInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_sing_in);
 
-        try {
-            MapsInitializer.initialize(getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, PassengerMapsActivity.class));
         }
 
         textInputEmail = findViewById(R.id.textInputEmail);
@@ -50,6 +50,7 @@ public class PassengerSingInActivity extends AppCompatActivity {
         toggleLoginSingUpTextView.setOnClickListener(view -> toggleLoginSingUp(view));
         mAuth = FirebaseAuth.getInstance();
 
+
     }
 
     private void toggleLoginSingUp(View view) {
@@ -59,7 +60,7 @@ public class PassengerSingInActivity extends AppCompatActivity {
             toggleLoginSingUpTextView.setText(R.string.tap_to_log_in);
             textInputConfirmPassword.setVisibility(View.VISIBLE);
             textInputName.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             isLoginModeActive = true;
             loginSingUpButton.setText(R.string.log_in);
             toggleLoginSingUpTextView.setText(R.string.tap_to_sing_up);
@@ -79,6 +80,7 @@ public class PassengerSingInActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                startActivity(new Intent(PassengerSingInActivity.this, PassengerMapsActivity.class));
 //                                updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -101,6 +103,7 @@ public class PassengerSingInActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                startActivity(new Intent(PassengerSingInActivity.this, PassengerMapsActivity.class));
 //                            updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.

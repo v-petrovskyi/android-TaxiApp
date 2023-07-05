@@ -18,7 +18,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -31,7 +30,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,7 +40,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,13 +47,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Objects;
-
 import training.android.taxiapp.databinding.ActivityDriverMapsBinding;
 
-public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class PassengerMapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private ActivityDriverMapsBinding binding;
 
@@ -89,7 +82,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             @Override
             public void onClick(View view) {
                 auth.signOut();
-                singOutDriver();
+                singOutPassenger();
             }
         });
 
@@ -107,9 +100,9 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         startLocationUpdates();
     }
 
-    private void singOutDriver() {
+    private void singOutPassenger() {
         String driverUserId = currentUser.getUid();
-        DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("drivers");
+        DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("passengers");
         GeoFire geoFire = new GeoFire(drivers);
         geoFire.removeLocation(driverUserId);
         Intent intent = new Intent(this, ChooseModeActivity.class);
@@ -156,8 +149,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
         isLocationUpdatesActive = true;
         settingsClient.checkLocationSettings(locationSettingsRequest).addOnSuccessListener(locationSettingsResponse -> {
 
-            if (ActivityCompat.checkSelfPermission(DriverMapsActivity.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(DriverMapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(PassengerMapsActivity.this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(PassengerMapsActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -178,13 +171,13 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
                             ResolvableApiException resolvableApiException = (ResolvableApiException) e;
-                            resolvableApiException.startResolutionForResult(DriverMapsActivity.this, CHECK_SETTINGS_CODE);
+                            resolvableApiException.startResolutionForResult(PassengerMapsActivity.this, CHECK_SETTINGS_CODE);
                         } catch (IntentSender.SendIntentException ex) {
                             ex.printStackTrace();
                         }
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         String message = "Adjust location settings in your device";
-                        Toast.makeText(DriverMapsActivity.this, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PassengerMapsActivity.this, message, Toast.LENGTH_SHORT).show();
                         isLocationUpdatesActive = false;
                 }
                 updateLocationUi();
@@ -241,7 +234,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
 
             String driverUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("drivers");
+            DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("passengers");
             GeoFire geoFire = new GeoFire(drivers);
             geoFire.setLocation(driverUserId, new GeoLocation(currentLocation.getLatitude(), currentLocation.getLongitude()));
         }
@@ -272,16 +265,16 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void requestLocationPermission() {
-        boolean shouldProvide = ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        boolean shouldProvide = ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
         if (shouldProvide) {
             showSnackBar("location permission is needed for app functionality", "OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ActivityCompat.requestPermissions(DriverMapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                    ActivityCompat.requestPermissions(PassengerMapsActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
                 }
             });
         } else {
-            ActivityCompat.requestPermissions(DriverMapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(PassengerMapsActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         }
     }
 
@@ -299,7 +292,7 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
                     public void onClick(View view) {
                         Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", DriverMapsActivity.this.getPackageName(), null);
+                        Uri uri = Uri.fromParts("package", PassengerMapsActivity.this.getPackageName(), null);
                         intent.setData(uri);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);

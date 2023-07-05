@@ -20,9 +20,6 @@ public class ChooseModeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choose_mode);
 
         auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser()!=null){
-            startActivity(new Intent(this, DriverMapsActivity.class));
-        }
         driverButton = findViewById(R.id.driverButton);
         passengerButton = findViewById(R.id.passengerButton);
 

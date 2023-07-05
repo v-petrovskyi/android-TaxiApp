@@ -33,6 +33,11 @@ public class DriverSingInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_sing_in);
 
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, DriverMapsActivity.class));
+        }
+
         textInputEmail = findViewById(R.id.textInputEmail);
         textInputName = findViewById(R.id.textInputName);
         textInputPassword = findViewById(R.id.textInputPassword);
@@ -43,7 +48,7 @@ public class DriverSingInActivity extends AppCompatActivity {
         loginSingUpButton.setOnClickListener(view -> loginSingUpUser(view));
         toggleLoginSingUpTextView.setOnClickListener(view -> toggleLoginSingUp(view));
 
-        mAuth = FirebaseAuth.getInstance();
+
     }
 
     private void toggleLoginSingUp(View view) {
@@ -71,8 +76,8 @@ public class DriverSingInActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "signInWithEmail:success");
-                                startActivity(new Intent(DriverSingInActivity.this, DriverMapsActivity.class));
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                startActivity(new Intent(DriverSingInActivity.this, DriverMapsActivity.class));
 //                                updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -94,8 +99,8 @@ public class DriverSingInActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
-                                startActivity(new Intent(DriverSingInActivity.this, DriverMapsActivity.class));
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                startActivity(new Intent(DriverSingInActivity.this, DriverMapsActivity.class));
 //                            updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.
