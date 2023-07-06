@@ -16,4 +16,7 @@
     <string name="sing_out">Sing Out</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="title_activity_passenger_maps">PassengerMapsActivity</string>
+    <string name="book_taxi">Book taxi</string>
+    <string name="getting_your_taxi">Getting your taxi...</string>
+    <string name="getting_your_driver_location">"Getting your driver location... "</string>
 </resources>

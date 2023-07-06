@@ -109,8 +109,8 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private void singOutDriver() {
         String driverUserId = currentUser.getUid();
-        DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("drivers");
-        GeoFire geoFire = new GeoFire(drivers);
+        DatabaseReference driversGeoFire = FirebaseDatabase.getInstance().getReference().child("driversGeoFire");
+        GeoFire geoFire = new GeoFire(driversGeoFire);
         geoFire.removeLocation(driverUserId);
         Intent intent = new Intent(this, ChooseModeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -241,8 +241,11 @@ public class DriverMapsActivity extends FragmentActivity implements OnMapReadyCa
             mMap.addMarker(new MarkerOptions().position(driverLocation).title("Driver location"));
 
             String driverUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference driversGeoFire = FirebaseDatabase.getInstance().getReference().child("driversGeoFire");
             DatabaseReference drivers = FirebaseDatabase.getInstance().getReference().child("drivers");
-            GeoFire geoFire = new GeoFire(drivers);
+            drivers.setValue(true);
+
+            GeoFire geoFire = new GeoFire(driversGeoFire);
             geoFire.setLocation(driverUserId, new GeoLocation(currentLocation.getLatitude(), currentLocation.getLongitude()));
         }
     }

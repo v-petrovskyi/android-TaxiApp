@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +8,9 @@
     tools:context=".PassengerMapsActivity">
 
     <LinearLayout
+        android:id="@+id/topButtonsLayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -30,10 +33,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
-
     <fragment
         android:id="@+id/map"
+        android:layout_below="@+id/topButtonsLayout"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-</LinearLayout>
+    <Button
+        android:id="@+id/bookTaxiButton"
+        android:text="@string/book_taxi"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_border"
+        android:textColor="@color/design_default_color_primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
